@@ -8,31 +8,52 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Client;
+using Receiver;
+using System.Net;
 
 namespace PCClonerPrototype.Forms
 {
     public partial class ReceiverForm : Form
     {
         private static MainPage _mainPage = new();
-        private static SenderForm1 _senderForm = new();
-        public static int connectionCode;
+        private static ReceiverForm2 _receiverForm2 = new();
+        public static string? connectionCode;
+        private static bool _UDPResult = false;
+        private static IPAddress? senderIP;
+
         public ReceiverForm()
         {
             InitializeComponent();
         }
         private void btnNext_Click(object sender, EventArgs e)
         {
-            connectionCode = int.Parse(txtConnectionCode.Text);
-            StartSender(connectionCode);
+            connectionCode = txtConnectionCode.Text;
+            _ = StartSenderUDP(connectionCode);
         }
-        public void StartSender(int connectionCode)
+        private static async Task StartSenderUDP(string connectionCode)
         {
-            SenderUDP.Start(connectionCode);
+            _UDPResult = false;
+
+            var udpResult = await ReceiverUDP.SendUDPBroadcastAsync(connectionCode);
+            
+            _UDPResult = udpResult.Success;
+            senderIP = udpResult.SenderIPAddress;
+
+            if(_UDPResult == true)
+            {
+                _receiverForm2.Dock = DockStyle.Fill;
+                _receiverForm2.TopLevel = false;
+                MainForm.MainPanel.Controls.Clear();
+                MainForm.MainPanel.Controls.Add(_receiverForm2);
+                _receiverForm2.Show();
+
+                _ = ReceiverForm2.StartReceiverHTTP(senderIP);
+            }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+            txtConnectionCode.Text = "";
             _mainPage.Dock = DockStyle.Fill;
             _mainPage.TopLevel = false;
             MainForm.MainPanel.Controls.Clear();

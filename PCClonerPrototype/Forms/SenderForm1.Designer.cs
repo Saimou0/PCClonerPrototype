@@ -36,13 +36,15 @@
             TreeNode treeNode6 = new TreeNode("Työpöytä");
             TreeNode treeNode7 = new TreeNode("Käyttäjän tiedostot", new TreeNode[] { treeNode1, treeNode2, treeNode3, treeNode4, treeNode5, treeNode6 });
             TreeNode treeNode8 = new TreeNode("Wi-Fi yhteydet ja salasanat");
-            TreeNode treeNode9 = new TreeNode("Ajurit");
-            TreeNode treeNode10 = new TreeNode("Työpöydän taustakuva");
-            TreeNode treeNode11 = new TreeNode("Selainten kirjanmerkit ja muut tiedot");
+            TreeNode treeNode9 = new TreeNode("Työpöydän taustakuva");
+            TreeNode treeNode10 = new TreeNode("Selainten kirjanmerkit ja muut tiedot");
+            TreeNode treeNode11 = new TreeNode("Valitse kansio");
             treeView1 = new TreeView();
             panel1 = new Panel();
             btnBack = new Button();
             btnNext = new Button();
+            lblSelectedFolder = new Label();
+            lblSelectedFolderPath = new Label();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -73,12 +75,13 @@
             treeNode7.Text = "Käyttäjän tiedostot";
             treeNode8.Name = "Node7";
             treeNode8.Text = "Wi-Fi yhteydet ja salasanat";
-            treeNode9.Name = "Node8";
-            treeNode9.Text = "Ajurit";
-            treeNode10.Name = "Node9";
-            treeNode10.Text = "Työpöydän taustakuva";
-            treeNode11.Name = "Node10";
-            treeNode11.Text = "Selainten kirjanmerkit ja muut tiedot";
+            treeNode9.Name = "Node9";
+            treeNode9.Text = "Työpöydän taustakuva";
+            treeNode10.Name = "Node10";
+            treeNode10.Text = "Selainten kirjanmerkit ja muut tiedot";
+            treeNode11.Name = "Node11";
+            treeNode11.Tag = "Select Folder";
+            treeNode11.Text = "Valitse kansio";
             treeView1.Nodes.AddRange(new TreeNode[] { treeNode7, treeNode8, treeNode9, treeNode10, treeNode11 });
             treeView1.Size = new Size(776, 346);
             treeView1.TabIndex = 0;
@@ -114,12 +117,36 @@
             btnNext.UseVisualStyleBackColor = true;
             btnNext.Click += btnNext_Click;
             // 
+            // lblSelectedFolder
+            // 
+            lblSelectedFolder.AutoSize = true;
+            lblSelectedFolder.Font = new Font("Arial", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblSelectedFolder.Location = new Point(12, 361);
+            lblSelectedFolder.Name = "lblSelectedFolder";
+            lblSelectedFolder.Size = new Size(89, 16);
+            lblSelectedFolder.TabIndex = 3;
+            lblSelectedFolder.Text = "Valittu kansio:";
+            lblSelectedFolder.Visible = false;
+            // 
+            // lblSelectedFolderPath
+            // 
+            lblSelectedFolderPath.AutoSize = true;
+            lblSelectedFolderPath.Font = new Font("Arial", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblSelectedFolderPath.Location = new Point(12, 391);
+            lblSelectedFolderPath.Name = "lblSelectedFolderPath";
+            lblSelectedFolderPath.Size = new Size(93, 16);
+            lblSelectedFolderPath.TabIndex = 4;
+            lblSelectedFolderPath.Text = "Kansion polku:";
+            lblSelectedFolderPath.Visible = false;
+            // 
             // SenderForm1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.AppWorkspace;
             ClientSize = new Size(800, 450);
+            Controls.Add(lblSelectedFolderPath);
+            Controls.Add(lblSelectedFolder);
             Controls.Add(btnNext);
             Controls.Add(btnBack);
             Controls.Add(panel1);
@@ -128,6 +155,7 @@
             Text = "SenderForm";
             panel1.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -136,5 +164,7 @@
         private TreeView treeView1;
         private Button btnBack;
         private Button btnNext;
+        private Label lblSelectedFolder;
+        private Label lblSelectedFolderPath;
     }
 }

@@ -36,6 +36,10 @@ namespace PCClonerPrototype.Forms
             MainForm.MainPanel.Controls.Clear();
             MainForm.MainPanel.Controls.Add(_senderForm2);
             _senderForm2.Show();
+
+            SaveFileSelection();
+
+            _senderForm2.StartNetworking();
         }
 
         private void treeView1_BeforeSelect(object sender, TreeViewCancelEventArgs e)
@@ -45,23 +49,81 @@ namespace PCClonerPrototype.Forms
 
         private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if(e.Action != TreeViewAction.Unknown)
+            TreeNode? selectedNode = e.Node;
+            if (selectedNode?.Tag?.Equals("Select Folder") == true)
             {
-                if(e.Node.Nodes.Count > 0)
+                if(selectedNode.Checked)
                 {
-                    this.CheckAllChildNodes(e.Node, e.Node.Checked);
+                    FolderBrowserDialog dialog = new();
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        lblSelectedFolder.Visible = true;
+                        lblSelectedFolderPath.Visible = true;
+                        
+                        lblSelectedFolder.Text = "Valittu kansio: " + Path.GetFileName(dialog.SelectedPath);
+                        lblSelectedFolderPath.Text = "Kansion polku: " + dialog.SelectedPath;
+                        
+                        Program.selectedFolderPath = dialog.SelectedPath;
+                    } 
+                    else
+                    {
+                        selectedNode.Checked = false;
+                    }
+                }
+                else
+                {
+                    lblSelectedFolder.Visible = false;
+                    lblSelectedFolderPath.Visible = false;
+                    
+                    lblSelectedFolder.Text = "";
+                    lblSelectedFolderPath.Text = "";
+
+                    Program.selectedFolderPath = "";
+                }
+            }
+
+            // Check if node has child nodes
+            if (e.Action != TreeViewAction.Unknown)
+            {
+                // Check or uncheck all the child nodes
+                if (e.Node?.Nodes?.Count > 0)
+                {
+                    CheckAllChildNodes(e.Node, e.Node.Checked);
+                }
+                else if (e.Node != null)
+                {
+                    CheckAllChildNodes(e.Node, false);
                 }
             }
         }
 
-        private void CheckAllChildNodes(TreeNode treeNode, bool nodeChecked)
+        private void SaveFileSelection()
+        {
+            // Save nodes as keys and checks as values to program dictionary.
+            Program.fileSelection?.Clear();
+            foreach (TreeNode node in treeView1.Nodes)
+            {
+                SaveNodeSelection(node);
+            }
+        }
+
+        private static void SaveNodeSelection(TreeNode node)
+        {
+            Program.fileSelection[node.Text] = node.Checked;
+            foreach (TreeNode childNode in node.Nodes)
+            {
+                SaveNodeSelection(childNode);
+            }
+        }
+
+        private static void CheckAllChildNodes(TreeNode treeNode, bool nodeChecked)
         {
             foreach(TreeNode node in treeNode.Nodes)
             {
                 node.Checked = nodeChecked;
                 if(node.Nodes.Count > 0)
                 {
-                    this.CheckAllChildNodes(node, nodeChecked);
+                    CheckAllChildNodes(node, nodeChecked);
                 }
             }
         }

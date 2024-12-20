@@ -9,28 +9,79 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PCClonerPrototype;
-using Server;
+using Sender;
 
 namespace PCClonerPrototype.Forms
 {
     public partial class SenderForm2 : Form
     {
         private static SenderForm1 _senderForm1 = new();
+        private static SenderForm3 _senderForm3 = new();
+        private static CancellationTokenSource? _cancellationTokenSource;
+        private static bool _UDPResult = false;
         public SenderForm2()
         {
             InitializeComponent();
-            lblConnectionCode.Text = ReceiverUDP.GetConnectionCode();
-            //TODO: Make the back button close everything and make the receiverUDP re-roll the code everytime.
-            StartUDP();
         }
 
-        private static async Task StartUDP()
+        public async Task StartNetworking()
         {
-            await ReceiverUDP.ConnectionListener();
+            _cancellationTokenSource = new();
+
+            try
+            {
+                while (true)
+                {
+                    // Regenerate udp connection code and start listening
+                    SenderUDP.RegenerateCode();
+                    lblConnectionCode.Text = SenderUDP.GetConnectionCode();
+                    _UDPResult = await SenderUDP.ConnectionListenerAsync(_cancellationTokenSource.Token);
+
+                    // break the loop if cancellation has been requested.
+                    if (_cancellationTokenSource.Token.IsCancellationRequested)
+                    {
+                        Console.WriteLine("Cancellation requested, exiting loop.");
+                        break;
+                    }
+
+                    // Check udp result
+                    if (_UDPResult == true)
+                    {
+                        _senderForm3.Dock = DockStyle.Fill;
+                        _senderForm3.TopLevel = false;
+                        MainForm.MainPanel.Controls.Clear();
+                        MainForm.MainPanel.Controls.Add(_senderForm3);
+                        _senderForm3.Show();
+
+                        _UDPResult = false;
+
+                        _cancellationTokenSource.Dispose();
+
+                        // Start HTTP
+                        SenderForm3.StartSenderHTTP();
+                
+                        break;
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Operation was canceled");
+            }
+            finally
+            {
+                _cancellationTokenSource.Dispose();
+            }
+
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+
+            Program.fileSelection.Clear();
+
             _senderForm1.Dock = DockStyle.Fill;
             _senderForm1.TopLevel = false;
             MainForm.MainPanel.Controls.Clear();
