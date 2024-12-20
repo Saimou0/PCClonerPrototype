@@ -20,6 +20,8 @@ Edistymis palkki ei toimi.
 
 #### **Selain tiedot eivät vielä toimi!!**
 
+Jos selain tietojen kloonamista käytetään, lähettävä kone lähettää kopion, chromen, edgen ja operan Default kansiosta jos ne ovat olemassa. Kansiot jokaiselle selaimelle löytyy käyttäjän temp kansiosta, Browser Data. Jos kyseisten selainten Default kansion tiedostot korvaa tiedostoilla Browser Data kansioista, kaikki muut selaimen tiedot siirtyy paitsi, kirjautumis tiedot ja evästeet. Jotkin laajennukset eivät saata toimia oikein ja voi olla muita ongelmia joista en tiedä.
+
 ---
 
 ### Kokoaminen
