@@ -23,9 +23,3 @@ Edistymis palkki ei toimi.
 Jos selain tietojen kloonamista käytetään, lähettävä kone lähettää kopion, chromen, edgen ja operan Default kansiosta jos ne ovat olemassa. Kansiot jokaiselle selaimelle löytyy käyttäjän temp kansiosta, Browser Data. Jos kyseisten selainten Default kansion tiedostot korvaa tiedostoilla Browser Data kansioista, kaikki muut selaimen tiedot siirtyy paitsi, kirjautumis tiedot ja evästeet. Jotkin laajennukset eivät saata toimia oikein ja voi olla muita ongelmia joista en tiedä.
 
 ---
-
-### Kokoaminen
-
-Pitää koota omavaraisena. Jos ei kokoa omavaraisena, pitää asentaa .net 8 tietokoneille joilla sovellusta käytetään. Omavaraisen sovelluksen koko on monta kertaa suurempi kuin normaalin, mutta ei tarvitse asentaa mitään erikseen. Noin 150Mt verrattuna noin 300Kt
-
----
